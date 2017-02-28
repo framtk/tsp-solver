@@ -21,6 +21,8 @@
 int main(int argc, const char * argv[]) {
     clock_t tic = clock();
 
+    long known_solution;
+
     unsigned int seed = (unsigned int)time(NULL);
 
     if (argc > 1) {
@@ -41,6 +43,10 @@ int main(int argc, const char * argv[]) {
                 free(coordinates);
                 return 1;
             }
+
+            fgets(line, MAX_LINE_SIZE, tsp);
+            known_solution = strtol(line, NULL, 10);
+
             while (fgets(line, MAX_LINE_SIZE, tsp)) {
 
                 SPACE_REMOVED:
@@ -75,7 +81,7 @@ int main(int argc, const char * argv[]) {
             // set seed for random
             srand(seed);
 
-            int start = rand() % number;
+            size_t start = rand() % number;
 
             // set up the matrix and fill it with 0s
             int distance = 0;
@@ -101,9 +107,11 @@ int main(int argc, const char * argv[]) {
             }
 
             // create the result path array
-            int *path_result = calloc(number - 1, sizeof(int));
-            if (!(path_result)) {
-                free(path_result);
+            path current_path;
+
+            current_path.path_result = calloc(number - 1, sizeof(int));
+            if (!(current_path.path_result)) {
+                free(current_path.path_result);
                 goto FREE_VARIABLES;
             }
 
@@ -124,18 +132,18 @@ int main(int argc, const char * argv[]) {
             // print the map
 //            print_map(map, number, coordinates);
 
-            int length;
+//            int length;
 
-            path_result = get_solution(map, number, coordinates, &length, start);
+            current_path.path_result = get_solution(map, number, coordinates, &current_path.length, start);
 
-            simulated_annealing(map, path_result, &length, number);
+            simulated_annealing(map, current_path.path_result, &current_path.length, number);
 
             clock_t toc = clock();
 
             double time_spent = (double) (toc - tic) / CLOCKS_PER_SEC;
 
             printf("Total time: %f minutes, seed: %d\n", time_spent / 60, seed);
-            print_path(number,path_result, length);
+            print_path(number, current_path.path_result, current_path.length);
 
             // FREE VARIABLES
             FREE_VARIABLES:
@@ -144,6 +152,7 @@ int main(int argc, const char * argv[]) {
             }
             free(map);
             free(coordinates);
+            free(best);
 
         } else {
             printf("The selected file doesn't exist or it' not in the executable's directory\n");
