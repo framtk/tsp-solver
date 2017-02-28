@@ -142,8 +142,10 @@ void simulated_annealing(int** map, path *course, size_t number){
     double degrees = 10000;
     double cooling = 0.996;
 
-    int* temp = calloc(number - 1, sizeof(int));
-    if (!(temp)){
+    path temp;
+
+    temp.path_result = calloc(number - 1, sizeof(int));
+    if (!(temp.path_result)){
         goto END;
     }
 
@@ -151,7 +153,7 @@ void simulated_annealing(int** map, path *course, size_t number){
     double test;
 
     while (degrees > 1){
-        memcpy(temp, course->path_result, number * sizeof(int));
+        memcpy(temp.path_result, course->path_result, number * sizeof(int));
 
         size_t first_city = rand() % number;
         size_t second_city;
@@ -159,30 +161,30 @@ void simulated_annealing(int** map, path *course, size_t number){
             second_city = rand() % number;
         while (second_city == first_city);
 
-        int save_city = temp[first_city];
-        temp[first_city] = temp[second_city];
-        temp[second_city] = save_city;
+        int save_city = temp.path_result[first_city];
+        temp.path_result[first_city] = temp.path_result[second_city];
+        temp.path_result[second_city] = save_city;
 
-        int new_distance = calculate_tour(map, number, temp);
+        temp.length = calculate_tour(map, number, temp.path_result);
 
-        two_opt(map, number, temp, &new_distance);
+        two_opt(map, number, temp.path_result, &temp.length);
 
         accept = rand() / (double) RAND_MAX;
-        test = accept_solution(course->length, new_distance, degrees);
+        test = accept_solution(course->length, temp.length, degrees);
         if (accept < test){
-            course->length = new_distance;
-            memcpy(course->path_result, temp, number * sizeof(int));
+            course->length = temp.length;
+            memcpy(course->path_result, temp.path_result, number * sizeof(int));
         }
 
-        if (new_distance < course->length){
-            memcpy(course->path_result, temp, number * sizeof(int));
-            course->length = new_distance;
+        if (temp.length < course->length){
+            memcpy(course->path_result, temp.path_result, number * sizeof(int));
+            course->length = temp.length;
         }
         degrees = degrees * cooling;
     }
 
     END:
-    free(temp);
+    free(temp.path_result);
 }
 
 double accept_solution(int current_result, int result, double degrees){
