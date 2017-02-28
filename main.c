@@ -18,6 +18,10 @@
 #include "structures.h"
 #include "algorithms.h"
 
+int* get_solution(int** map, size_t number, coord *coordinates, int* length, int start){
+    return nearest_neighbor(map, number, coordinates, length, start);
+}
+
 int main(int argc, const char * argv[]) {
     clock_t tic = clock();
 

@@ -8,6 +8,7 @@
 #include <string.h>
 #include <math.h>
 
+// TODO
 int calculate_tour(int** map, size_t number, int*path){
     int tourDistance = 0;
     for (int i = 0; i < number - 1; i++){
@@ -17,10 +18,12 @@ int calculate_tour(int** map, size_t number, int*path){
     return tourDistance;
 }
 
+// TODO
 int* nearest_neighbor(int** map, size_t number, coord *coordinates, int* length, int start){
     *length = INT_MAX;
-    int* temp = calloc(number - 1, sizeof(int));
-    if (!(temp)){
+    path temp;
+    temp.path_result = calloc(number - 1, sizeof(int));
+    if (!(temp.path_result)){
         goto SKIP_NN;
     }
 
@@ -49,7 +52,7 @@ int* nearest_neighbor(int** map, size_t number, coord *coordinates, int* length,
 
         int tour = 0;
         coordinates[first].visited = 1;
-        temp[0] = first;
+        temp.path_result[0] = first;
 
         for (size_t i = 0; i < number - 1; i++) {
             minDistance = INT_MAX;
@@ -60,32 +63,33 @@ int* nearest_neighbor(int** map, size_t number, coord *coordinates, int* length,
                 }
             }
             coordinates[save2].visited = 1;
-            temp[i + 1] = save2;
-            temp[i + 1] = save2;
+            temp.path_result[i + 1] = save2;
+            temp.path_result[i + 1] = save2;
             save2 = save;
         }
 
         // apply 2-opt
-        int temp_len = *length;
-        two_opt(map,number,temp,&temp_len);
-        tour = calculate_tour(map, number, temp);
+        temp.length = *length;
+        two_opt(map,number,&temp);
+        tour = calculate_tour(map, number, temp.path_result);
 
         // save if better than previous one
         if (tour < *length) {
             *length = tour;
-            memcpy(solution, temp, number * sizeof(int));
+            memcpy(solution, temp.path_result, number * sizeof(int));
         }
 
-    free(temp);
+    free(temp.path_result);
     return solution;
     SKIP_NN:
-    free(temp);
+    free(temp.path_result);
     return 0;
 }
 
-void two_opt(int** map, size_t number, int* path, int* length){
+// TODO
+void two_opt(int** map, size_t number, path *course){
 
-    int min_distance = *length;
+    int min_distance = course->length;
     int runs = 20;
     int check;
 
@@ -95,9 +99,9 @@ void two_opt(int** map, size_t number, int* path, int* length){
             for (int j = i + 1; j < number - 1; ++j) {
 
                 //only check moves that will reduce distance
-                if ((map[path[i - 1]][path[j]] + map[path[i]][path[j + 1]]) < (map[path[i - 1]][path[i]] + map[path[j]][path[j + 1]])) {
-                    swap(path, i, j);
-                    min_distance = calculate_tour(map, number, path);
+                if ((map[course->path_result[i - 1]][course->path_result[j]] + map[course->path_result[i]][course->path_result[j + 1]]) < (map[course->path_result[i - 1]][course->path_result[i]] + map[course->path_result[j]][course->path_result[j + 1]])) {
+                    swap(course->path_result, i, j);
+                    min_distance = calculate_tour(map, number, course->path_result);
                     check = 0;
                 }
             }
@@ -107,10 +111,9 @@ void two_opt(int** map, size_t number, int* path, int* length){
             runs = 0;
         }
     }
-
-    *length = min_distance;
+    course->length = min_distance;
 }
-
+// TODO
 void swap(int* path, int i, int j) {
     size_t size = (size_t)j;
     int *temp = calloc(size, sizeof(int));
@@ -167,7 +170,7 @@ void simulated_annealing(int** map, path *course, size_t number){
 
         temp.length = calculate_tour(map, number, temp.path_result);
 
-        two_opt(map, number, temp.path_result, &temp.length);
+        two_opt(map, number, &temp);
 
         accept = rand() / (double) RAND_MAX;
         test = accept_solution(course->length, temp.length, degrees);
@@ -187,10 +190,7 @@ void simulated_annealing(int** map, path *course, size_t number){
     free(temp.path_result);
 }
 
+// TODO
 double accept_solution(int current_result, int result, double degrees){
     return pow(M_E, (current_result - result) / degrees);
-}
-
-int* get_solution(int** map, size_t number, coord *coordinates, int* length, int start){
-    return nearest_neighbor(map, number, coordinates, length, start);
 }
