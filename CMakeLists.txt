@@ -3,5 +3,5 @@ project(tsp)
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c99")
 
-set(SOURCE_FILES main.c printer.c printer.h algorithms.c algorithms.h)
+set(SOURCE_FILES main.c printer.c printer.h algorithms.c algorithms.h structures.h)
 add_executable(tsp ${SOURCE_FILES})

@@ -6,7 +6,7 @@
 #ifndef TSP_ALGORITHMS_H
 #define TSP_ALGORITHMS_H
 
-#include "printer.h"
+#include "structures.h"
 #include <stdlib.h>
 
 int* get_solution(int** map, size_t number, coord *coordinates, int* length, int start);

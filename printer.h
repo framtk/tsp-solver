@@ -7,12 +7,7 @@
 #define TSP_PRINTER_H
 
 #include <stdlib.h>
-
-typedef struct coordinate{
-    double x;
-    double y;
-    int visited;
-}coord;
+#include "structures.h"
 
 void print_map(int** map, size_t number, coord* coordinates);
 

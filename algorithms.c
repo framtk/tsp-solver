@@ -3,6 +3,7 @@
 //
 
 #include "algorithms.h"
+#include "structures.h"
 #include <limits.h>
 #include <string.h>
 #include <math.h>

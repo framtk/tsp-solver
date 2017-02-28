@@ -15,6 +15,7 @@
 #include <math.h>
 #include <time.h>
 #include "printer.h"
+#include "structures.h"
 #include "algorithms.h"
 
 int main(int argc, const char * argv[]) {
