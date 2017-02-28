@@ -136,7 +136,7 @@ int main(int argc, const char * argv[]) {
 
             current_path.path_result = get_solution(map, number, coordinates, &current_path.length, start);
 
-            simulated_annealing(map, current_path.path_result, &current_path.length, number);
+            simulated_annealing(map, &current_path, number);
 
             clock_t toc = clock();
 

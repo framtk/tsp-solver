@@ -136,7 +136,7 @@ void swap(int* path, int i, int j) {
     free(temp);
 }
 
-void simulated_annealing(int** map, int *path, int* length, size_t number){
+void simulated_annealing(int** map, path *course, size_t number){
 
     // best degrees and cooling to assure < 3 min run time on all problems
     double degrees = 10000;
@@ -151,10 +151,10 @@ void simulated_annealing(int** map, int *path, int* length, size_t number){
     double test;
 
     while (degrees > 1){
-        memcpy(temp, path, number * sizeof(int));
+        memcpy(temp, course->path_result, number * sizeof(int));
 
-        int first_city = rand() % number;
-        int second_city;
+        size_t first_city = rand() % number;
+        size_t second_city;
         do
             second_city = rand() % number;
         while (second_city == first_city);
@@ -168,15 +168,15 @@ void simulated_annealing(int** map, int *path, int* length, size_t number){
         two_opt(map, number, temp, &new_distance);
 
         accept = rand() / (double) RAND_MAX;
-        test = accept_solution(*length, new_distance, degrees);
+        test = accept_solution(course->length, new_distance, degrees);
         if (accept < test){
-            *length = new_distance;
-            memcpy(path, temp, number * sizeof(int));
+            course->length = new_distance;
+            memcpy(course->path_result, temp, number * sizeof(int));
         }
 
-        if (new_distance < *length){
-            memcpy(path, temp, number * sizeof(int));
-            *length = new_distance;
+        if (new_distance < course->length){
+            memcpy(course->path_result, temp, number * sizeof(int));
+            course->length = new_distance;
         }
         degrees = degrees * cooling;
     }
