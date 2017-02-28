@@ -5,6 +5,7 @@
 #include "algorithms.h"
 #include "structures.h"
 #include <limits.h>
+#include <stdio.h>
 #include <string.h>
 #include <math.h>
 
@@ -18,18 +19,12 @@ int calculate_tour(int **map, size_t city_number, int *path){
 }
 
 // TODO
-int *nearest_neighbor(int **map, size_t city_number, coord *coordinates, int *length, int start){
-    *length = INT_MAX;
+int *nearest_neighbor(int **map, size_t city_number, coord *coordinates, path *course, int start){
+    course->length = INT_MAX;
     path temp;
     temp.length = 0;
     temp.path_result = calloc(city_number - 1, sizeof(int));
     if (!(temp.path_result)){
-        goto SKIP_NN;
-    }
-
-    int* solution = calloc(city_number - 1, sizeof(int));
-    if (!(solution)){
-        free(solution);
         goto SKIP_NN;
     }
 
@@ -68,21 +63,17 @@ int *nearest_neighbor(int **map, size_t city_number, coord *coordinates, int *le
         }
 
         // apply 2-opt
-        temp.length = *length;
+        temp.length = course->length;
         two_opt(map,city_number,&temp);
         temp.length = calculate_tour(map, city_number, temp.path_result);
 
         // save if better than previous one
-        if (temp.length < *length) {
-            *length = temp.length;
-            memcpy(solution, temp.path_result, city_number * sizeof(int));
+        if (temp.length < course->length) {
+            course->length = temp.length;
+            memcpy(course->path_result, temp.path_result, city_number * sizeof(int));
         }
-
-    free(temp.path_result);
-    return solution;
     SKIP_NN:
     free(temp.path_result);
-    return 0;
 }
 
 void two_opt(int** map, size_t city_number, path *course){
@@ -156,6 +147,7 @@ void simulated_annealing(int** map, path *course, size_t number){
     double test;
 
     while (degrees > 1){
+        printf("temperature: %f\n",degrees);
         memcpy(temp.path_result, course->path_result, number * sizeof(int));
 
         size_t first_city = rand() % number;

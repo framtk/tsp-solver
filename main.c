@@ -18,8 +18,9 @@
 #include "structures.h"
 #include "algorithms.h"
 
-int* get_solution(int** map, size_t number, coord *coordinates, int* length, int start){
-    return nearest_neighbor(map, number, coordinates, length, start);
+void get_solution(int** map, size_t number, coord *coordinates, path *course, int start){
+    nearest_neighbor(map, number, coordinates, course, start);
+    simulated_annealing(map, course, number);
 }
 
 int main(int argc, const char * argv[]) {
@@ -85,10 +86,10 @@ int main(int argc, const char * argv[]) {
             // set seed for random
             srand(seed);
 
-            size_t start = rand() % number;
+            int start = (int)(rand() % number);
 
             // set up the matrix and fill it with 0s
-            int distance = 0;
+            long distance = 0;
             int **map;
             map = calloc((number - 1), sizeof(int *));
             if (!(map)) {
@@ -126,9 +127,9 @@ int main(int argc, const char * argv[]) {
                 for (int j = 0; j < number; j++) {
                     // avoid calculating distances twice and from a city to itself
                     if (i != j && map[i][j] == 0) {
-                        distance = round(sqrt(pow(coordinates[i].x - coordinates[j].x, 2) + pow(coordinates[i].y - coordinates[j].y, 2)));
-                        map[i][j] = distance;
-                        map[j][i] = distance;
+                        distance = lround(sqrt(pow(coordinates[i].x - coordinates[j].x, 2) + pow(coordinates[i].y - coordinates[j].y, 2)));
+                        map[i][j] = (int)distance;
+                        map[j][i] = (int)distance;
                     }
                 }
             }
@@ -138,9 +139,7 @@ int main(int argc, const char * argv[]) {
 
 //            int length;
 
-            current_path.path_result = get_solution(map, number, coordinates, &current_path.length, start);
-
-            simulated_annealing(map, &current_path, number);
+            get_solution(map, number, coordinates, &current_path, start);
 
             clock_t toc = clock();
 
