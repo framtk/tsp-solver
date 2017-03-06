@@ -5,6 +5,8 @@
 #ifndef TSP_STRUCTURES_H
 #define TSP_STRUCTURES_H
 
+#include <stdlib.h>
+
 typedef struct coordinate{
     double x;
     double y;
@@ -14,6 +16,7 @@ typedef struct coordinate{
 typedef struct course{
     int *path_result;
     int length;
+    size_t city_number;
 }path;
 
 #endif //TSP_STRUCTURES_H

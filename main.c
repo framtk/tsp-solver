@@ -18,9 +18,9 @@
 #include "structures.h"
 #include "algorithms.h"
 
-void get_solution(int** map, size_t number, coord *coordinates, path *course, int start){
-    nearest_neighbor(map, number, coordinates, course, start);
-    simulated_annealing(map, course, number);
+void get_solution(int** map, size_t city_number, coord *coordinates, path *course, int start){
+    nearest_neighbor(map, city_number, coordinates, course, start);
+    simulated_annealing(map, course, city_number);
 }
 
 int main(int argc, const char * argv[]) {
@@ -31,8 +31,11 @@ int main(int argc, const char * argv[]) {
     unsigned int seed = (unsigned int)time(NULL);
 
     if (argc > 1) {
+        // create the result path array
+        path current_path;
+
         char line[MAX_LINE_SIZE];
-        size_t number = 0;
+        current_path.city_number = 0;
         // coordinates initializations
         coord *coordinates = malloc(sizeof(coord));
         if (!(coordinates)) {
@@ -60,12 +63,12 @@ int main(int argc, const char * argv[]) {
                 if (isdigit(line[0])) {
                     char *token = strtok(line, " ");
                     token = strtok(NULL, " ");
-                    number++;
-                    coordinates = realloc(coordinates, number * sizeof(coord));
-                    coordinates[number - 1].x = strtod(token, NULL);
+                    current_path.city_number++;
+                    coordinates = realloc(coordinates, current_path.city_number * sizeof(coord));
+                    coordinates[current_path.city_number - 1].x = strtod(token, NULL);
                     token = strtok(NULL, " ");
-                    coordinates[number - 1].y = strtod(token, NULL);
-                    coordinates[number - 1].visited = 0;
+                    coordinates[current_path.city_number - 1].y = strtod(token, NULL);
+                    coordinates[current_path.city_number - 1].visited = 0;
                 }
                     // if it's a space remove it and go back to the if
                 else if (line[0] == ' ') {
@@ -86,20 +89,20 @@ int main(int argc, const char * argv[]) {
             // set seed for random
             srand(seed);
 
-            int start = (int)(rand() % number);
+            int start = (int)(rand() % current_path.city_number);
 
             // set up the matrix and fill it with 0s
             long distance = 0;
             int **map;
-            map = calloc((number - 1), sizeof(int *));
+            map = calloc((current_path.city_number - 1), sizeof(int *));
             if (!(map)) {
                 printf("Not enough memory!\n");
                 free(map);
                 free(coordinates);
                 return 1;
             }
-            for (int i = 0; i < number; i++) {
-                map[i] = calloc(number, sizeof(int));
+            for (int i = 0; i < current_path.city_number; i++) {
+                map[i] = calloc(current_path.city_number, sizeof(int));
                 if (!(map[i])) {
                     printf("Not enough memory!\n");
                     while (--i >= 0) {
@@ -111,20 +114,17 @@ int main(int argc, const char * argv[]) {
                 }
             }
 
-            // create the result path array
-            path current_path;
-
-            current_path.path_result = calloc(number - 1, sizeof(int));
+            current_path.path_result = calloc(current_path.city_number - 1, sizeof(int));
             if (!(current_path.path_result)) {
                 free(current_path.path_result);
                 goto FREE_VARIABLES;
             }
 
-            int *best = calloc(number - 1, sizeof(int));
+            int *best = calloc(current_path.city_number - 1, sizeof(int));
 
             // compute the distance between all nodes
-            for (int i = 0; i < number; i++) {
-                for (int j = 0; j < number; j++) {
+            for (int i = 0; i < current_path.city_number; i++) {
+                for (int j = 0; j < current_path.city_number; j++) {
                     // avoid calculating distances twice and from a city to itself
                     if (i != j && map[i][j] == 0) {
                         distance = lround(sqrt(pow(coordinates[i].x - coordinates[j].x, 2) + pow(coordinates[i].y - coordinates[j].y, 2)));
@@ -139,18 +139,18 @@ int main(int argc, const char * argv[]) {
 
 //            int length;
 
-            get_solution(map, number, coordinates, &current_path, start);
+            get_solution(map, current_path.city_number, coordinates, &current_path, start);
 
             clock_t toc = clock();
 
             double time_spent = (double) (toc - tic) / CLOCKS_PER_SEC;
 
             printf("Total time: %f minutes, seed: %d\n", time_spent / 60, seed);
-            print_path(number, current_path.path_result, current_path.length);
+            print_path(current_path.city_number, current_path.path_result, current_path.length);
 
             // FREE VARIABLES
             FREE_VARIABLES:
-            for (int i = 0; i < number; i++) {
+            for (int i = 0; i < current_path.city_number; i++) {
                 free(map[i]);
             }
             free(map);
