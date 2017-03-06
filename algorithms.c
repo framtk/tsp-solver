@@ -65,7 +65,7 @@ int *nearest_neighbor(int **map, coord *coordinates, path *course, int start){
 
         // apply 2-opt
         temp.length = course->length;
-        two_opt(map,course->city_number,&temp);
+        two_opt(map, &temp);
         temp.length = calculate_tour(map, course->city_number, temp.path_result);
 
         // save if better than previous one
@@ -77,23 +77,23 @@ int *nearest_neighbor(int **map, coord *coordinates, path *course, int start){
     free(temp.path_result);
 }
 
-void two_opt(int** map, size_t city_number, path *course){
+void two_opt(int** map, path *temp){
 
-    int min_distance = course->length;
+    int min_distance = temp->length;
     int runs = 20;
     int check;
 
     while(runs > 1) {
         check = 1;
-        for (int i = 1; i < city_number; ++i) {
-            for (int j = i + 1; j < city_number - 1; ++j) {
+        for (int i = 1; i < temp->city_number; ++i) {
+            for (int j = i + 1; j < temp->city_number - 1; ++j) {
 
                 //only check moves that will reduce distance
-                if ((map[course->path_result[i - 1]][course->path_result[j]] +
-                        map[course->path_result[i]][course->path_result[j + 1]]) < (map[course->path_result[i - 1]][course->path_result[i]] +
-                        map[course->path_result[j]][course->path_result[j + 1]])) {
-                    swap(course->path_result, i, j);
-                    min_distance = calculate_tour(map, city_number, course->path_result);
+                if ((map[temp->path_result[i - 1]][temp->path_result[j]] +
+                        map[temp->path_result[i]][temp->path_result[j + 1]]) < (map[temp->path_result[i - 1]][temp->path_result[i]] +
+                        map[temp->path_result[j]][temp->path_result[j + 1]])) {
+                    swap(temp->path_result, i, j);
+                    min_distance = calculate_tour(map, temp->city_number, temp->path_result);
                     check = 0;
                 }
             }
@@ -103,7 +103,7 @@ void two_opt(int** map, size_t city_number, path *course){
             runs = 0;
         }
     }
-    course->length = min_distance;
+    temp->length = min_distance;
 }
 
 void swap(int* path_result, int i, int j) {
@@ -138,7 +138,7 @@ void simulated_annealing(int** map, path *course, size_t number){
     double cooling = 0.996;
 
     path temp;
-
+    temp.city_number = course->city_number;
     temp.path_result = calloc(number - 1, sizeof(int));
     if (!(temp.path_result)){
         goto END;
@@ -163,7 +163,7 @@ void simulated_annealing(int** map, path *course, size_t number){
 
         temp.length = calculate_tour(map, number, temp.path_result);
 
-        two_opt(map, number, &temp);
+        two_opt(map, &temp);
 
         accept = rand() / (double) RAND_MAX;
         test = accept_solution(course->length, temp.length, degrees);

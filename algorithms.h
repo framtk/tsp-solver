@@ -13,7 +13,7 @@ void get_solution(int** map, size_t number, coord *coordinates, path *course, in
 
 int* nearest_neighbor(int** map, coord* coordinates, path *course, int start);
 
-void two_opt(int** map, size_t number, path *course);
+void two_opt(int** map, path *course);
 
 int calculate_tour(int** map, size_t number, int*path);
 
