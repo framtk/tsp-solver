@@ -19,11 +19,12 @@ int calculate_tour(int **map, size_t city_number, int *path){
 }
 
 // TODO
-int *nearest_neighbor(int **map, size_t city_number, coord *coordinates, path *course, int start){
+int *nearest_neighbor(int **map, coord *coordinates, path *course, int start){
     course->length = INT_MAX;
     path temp;
     temp.length = 0;
-    temp.path_result = calloc(city_number - 1, sizeof(int));
+    temp.city_number = course->city_number;
+    temp.path_result = calloc(course->city_number - 1, sizeof(int));
     if (!(temp.path_result)){
         goto SKIP_NN;
     }
@@ -32,13 +33,13 @@ int *nearest_neighbor(int **map, size_t city_number, coord *coordinates, path *c
 
         save = save2 = first = start;
         minDistance = INT_MAX;
-        for (int p = 0; p < city_number; p++){
+        for (int p = 0; p < course->city_number; p++){
             coordinates[p].visited = 0;
         }
 
         // end reset
 
-        for (int i = 0; i < city_number - 1; i++) {
+        for (int i = 0; i < course->city_number - 1; i++) {
             if (map[save][i] != 0 && map[save][i] < minDistance) {
                 minDistance = map[save][i];
                 save2 = i;
@@ -48,9 +49,9 @@ int *nearest_neighbor(int **map, size_t city_number, coord *coordinates, path *c
         coordinates[first].visited = 1;
         temp.path_result[0] = first;
 
-        for (size_t i = 0; i < city_number - 1; i++) {
+        for (size_t i = 0; i < course->city_number - 1; i++) {
             minDistance = INT_MAX;
-            for (int j = 0; j < city_number; j++) {
+            for (int j = 0; j < course->city_number; j++) {
                 if (save2 != j && map[save2][j] < minDistance && !(coordinates[j].visited)) {
                     minDistance = map[save2][j];
                     save = j;
@@ -64,13 +65,13 @@ int *nearest_neighbor(int **map, size_t city_number, coord *coordinates, path *c
 
         // apply 2-opt
         temp.length = course->length;
-        two_opt(map,city_number,&temp);
-        temp.length = calculate_tour(map, city_number, temp.path_result);
+        two_opt(map,course->city_number,&temp);
+        temp.length = calculate_tour(map, course->city_number, temp.path_result);
 
         // save if better than previous one
         if (temp.length < course->length) {
             course->length = temp.length;
-            memcpy(course->path_result, temp.path_result, city_number * sizeof(int));
+            memcpy(course->path_result, temp.path_result, course->city_number * sizeof(int));
         }
     SKIP_NN:
     free(temp.path_result);

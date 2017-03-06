@@ -19,7 +19,7 @@
 #include "algorithms.h"
 
 void get_solution(int** map, size_t city_number, coord *coordinates, path *course, int start){
-    nearest_neighbor(map, city_number, coordinates, course, start);
+    nearest_neighbor(map, coordinates, course, start);
     simulated_annealing(map, course, city_number);
 }
 
