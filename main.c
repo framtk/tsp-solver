@@ -18,9 +18,9 @@
 #include "structures.h"
 #include "algorithms.h"
 
-void get_solution(int** map, size_t city_number, coord *coordinates, path *course, int start){
+void get_solution(int** map, coord *coordinates, path *course, int start){
     nearest_neighbor(map, coordinates, course, start);
-    simulated_annealing(map, course, city_number);
+    simulated_annealing(map, course);
 }
 
 int main(int argc, const char * argv[]) {
@@ -139,7 +139,7 @@ int main(int argc, const char * argv[]) {
 
 //            int length;
 
-            get_solution(map, current_path.city_number, coordinates, &current_path, start);
+            get_solution(map, coordinates, &current_path, start);
 
             clock_t toc = clock();
 
