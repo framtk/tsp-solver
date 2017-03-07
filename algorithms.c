@@ -24,7 +24,7 @@ int *nearest_neighbor(int **map, coord *coordinates, path *course, int start){
     path temp;
     temp.length = 0;
     temp.city_number = course->city_number;
-    temp.path_result = calloc(course->city_number - 1, sizeof(int));
+    temp.path_result = calloc(course->city_number, sizeof(int));
     if (!(temp.path_result)){
         goto SKIP_NN;
     }
@@ -139,7 +139,7 @@ void simulated_annealing(int** map, path *course){
 
     path temp;
     temp.city_number = course->city_number;
-    temp.path_result = calloc(course->city_number - 1, sizeof(int));
+    temp.path_result = calloc(course->city_number, sizeof(int));
     if (!(temp.path_result)){
         goto END;
     }

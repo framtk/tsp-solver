@@ -114,13 +114,13 @@ int main(int argc, const char * argv[]) {
                 }
             }
 
-            current_path.path_result = calloc(current_path.city_number - 1, sizeof(int));
+            current_path.path_result = calloc(current_path.city_number, sizeof(int));
             if (!(current_path.path_result)) {
                 free(current_path.path_result);
                 goto FREE_VARIABLES;
             }
 
-            int *best = calloc(current_path.city_number - 1, sizeof(int));
+            int *best = calloc(current_path.city_number, sizeof(int));
 
             // compute the distance between all nodes
             for (int i = 0; i < current_path.city_number; i++) {
