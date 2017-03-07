@@ -94,7 +94,7 @@ int main(int argc, const char * argv[]) {
             // set up the matrix and fill it with 0s
             long distance = 0;
             int **map;
-            map = calloc((current_path.city_number - 1), sizeof(int *));
+            map = calloc((current_path.city_number), sizeof(int *));
             if (!(map)) {
                 printf("Not enough memory!\n");
                 free(map);
@@ -135,7 +135,7 @@ int main(int argc, const char * argv[]) {
             }
 
             // print the map
-//            print_map(map, number, coordinates);
+//            print_map(map, current_path.city_number, coordinates);
 
 //            int length;
 
