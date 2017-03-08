@@ -14,6 +14,7 @@
 #include <ctype.h>
 #include <math.h>
 #include <time.h>
+#include <unistd.h>
 #include "printer.h"
 #include "structures.h"
 #include "algorithms.h"
@@ -23,15 +24,50 @@ void get_solution(int** map, coord *coordinates, path *course, int start){
     simulated_annealing(map, course);
 }
 
-int main(int argc, const char * argv[]) {
+int main(int argc, char *argv[]) {
     clock_t tic = clock();
+
+    int rep = 1;
+    char *filename = NULL;
+    unsigned int seed = (unsigned int)time(NULL);
+    int filename_flag = 1;
+    int arg;
 
     long known_solution;
 
-    unsigned int seed = (unsigned int)time(NULL);
+    while ((arg = getopt (argc, argv, "f:s:r:")) != -1)
+        switch (arg)
+        {
+            case 'f':
+                filename = optarg;
+                filename_flag = 0;
+                break;
+            case 's':
+                seed = (unsigned int)strtol(optarg, NULL, 10);
+                break;
+            case 'r':
+                rep = (int)strtol(optarg, NULL, 10);
+                break;
+            case '?':
+                if (optopt == 'f')
+                    fprintf (stderr, "Option -%c requires an argument.\n", optopt);
+                else if (optopt == 's')
+                    fprintf (stderr, "Option -%c requires an argument.\n", optopt);
+                else if (optopt == 'r')
+                    fprintf (stderr, "Option -%c requires an argument.\n", optopt);
+                else if (isprint (optopt))
+                    fprintf (stderr, "Unknown option `-%c'.\n", optopt);
+                else
+                    fprintf (stderr, "Unknown option character `\\x%x'.\n", optopt);
+                return 1;
+            default:
+                abort ();
+        }
+    if (filename_flag){
+        fprintf (stderr, "Filename containing tsp needed, use -f filepath.\n");
+        return 1;
+    }
 
-    if (argc > 1) {
-        // create the result path array
         path current_path;
 
         char line[MAX_LINE_SIZE];
@@ -44,8 +80,8 @@ int main(int argc, const char * argv[]) {
         }
 
         // check if file exists
-        if (access(argv[1], F_OK) != -1) {
-            FILE *tsp = fopen(argv[1], "r");
+        if (access(filename, F_OK) != -1) {
+            FILE *tsp = fopen(filename, "r");
             if (!tsp) {
                 printf("There was an error opening the file!\n");
                 free(coordinates);
@@ -81,10 +117,6 @@ int main(int argc, const char * argv[]) {
                 }
             }
             fclose(tsp);
-
-            if (argv[2]) {
-                seed = (unsigned int) strtol(argv[2], NULL, 10);
-            }
 
             // set seed for random
             srand(seed);
@@ -134,10 +166,8 @@ int main(int argc, const char * argv[]) {
                 }
             }
 
-            // print the map
+            // prints the map for debugging purposes
 //            print_map(map, current_path.city_number, coordinates);
-
-//            int length;
 
             get_solution(map, coordinates, &current_path, start);
 
@@ -159,11 +189,8 @@ int main(int argc, const char * argv[]) {
 
         } else {
             printf("The selected file doesn't exist or it' not in the executable's directory\n");
+            return 1;
         }
-    } else {
-        printf("File name needed \n");
-        return 1;
-    }
     return 0;
 }
 

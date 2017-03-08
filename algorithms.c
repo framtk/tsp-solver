@@ -18,8 +18,7 @@ int calculate_tour(int **map, path *course){
     return tourDistance;
 }
 
-// TODO
-int *nearest_neighbor(int **map, coord *coordinates, path *course, int start){
+void nearest_neighbor(int **map, coord *coordinates, path *course, int start){
     course->length = INT_MAX;
     path temp;
     temp.length = 0;
@@ -82,16 +81,20 @@ void two_opt(int** map, path *temp){
     int min_distance = temp->length;
     int runs = 20;
     int check;
+    int first, second, third, fourth;
 
     while(runs > 1) {
         check = 1;
         for (int i = 1; i < temp->city_number; ++i) {
             for (int j = i + 1; j < temp->city_number - 1; ++j) {
 
+                first = map[temp->path_result[i - 1]][temp->path_result[j]];
+                second = map[temp->path_result[i]][temp->path_result[j + 1]];
+                third = map[temp->path_result[i - 1]][temp->path_result[i]];
+                fourth = map[temp->path_result[j]][temp->path_result[j + 1]];
+
                 //only check moves that will reduce distance
-                if ((map[temp->path_result[i - 1]][temp->path_result[j]] +
-                        map[temp->path_result[i]][temp->path_result[j + 1]]) < (map[temp->path_result[i - 1]][temp->path_result[i]] +
-                        map[temp->path_result[j]][temp->path_result[j + 1]])) {
+                if ((first + second) < (third + fourth)) {
                     swap(temp->path_result, i, j);
                     min_distance = calculate_tour(map, temp);
                     check = 0;

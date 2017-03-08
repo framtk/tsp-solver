@@ -11,7 +11,7 @@
 
 void get_solution(int** map, coord *coordinates, path *course, int start);
 
-int* nearest_neighbor(int** map, coord* coordinates, path *course, int start);
+void nearest_neighbor(int** map, coord* coordinates, path *course, int start);
 
 void two_opt(int** map, path *course);
 
