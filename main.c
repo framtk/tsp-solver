@@ -14,7 +14,6 @@
 #include <ctype.h>
 #include <math.h>
 #include <time.h>
-#include <unistd.h>
 #include <limits.h>
 #include "printer.h"
 #include "structures.h"
