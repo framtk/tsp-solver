@@ -15,6 +15,7 @@
 #include <math.h>
 #include <time.h>
 #include <unistd.h>
+#include <limits.h>
 #include "printer.h"
 #include "structures.h"
 #include "algorithms.h"
@@ -25,7 +26,6 @@ void get_solution(int** map, coord *coordinates, path *course, int start){
 }
 
 int main(int argc, char *argv[]) {
-    clock_t tic = clock();
 
     int rep = 1;
     char *filename = NULL;
@@ -92,36 +92,23 @@ int main(int argc, char *argv[]) {
             known_solution = strtol(line, NULL, 10);
 
             while (fgets(line, MAX_LINE_SIZE, tsp)) {
-
-                SPACE_REMOVED:
-
                 // check is first character of the line is a number
                 if (isdigit(line[0])) {
                     char *token = strtok(line, " ");
                     token = strtok(NULL, " ");
                     current_path.city_number++;
-                    coordinates = realloc(coordinates, current_path.city_number * sizeof(coord));
-                    coordinates[current_path.city_number - 1].x = strtod(token, NULL);
+                    coordinates = realloc(coordinates,
+                                          current_path.city_number *
+                                          sizeof(coord));
+                    coordinates[current_path.city_number - 1].x = strtod(token,
+                                                                         NULL);
                     token = strtok(NULL, " ");
-                    coordinates[current_path.city_number - 1].y = strtod(token, NULL);
+                    coordinates[current_path.city_number - 1].y = strtod(token,
+                                                                         NULL);
                     coordinates[current_path.city_number - 1].visited = 0;
-                }
-                    // if it's a space remove it and go back to the if
-                else if (line[0] == ' ') {
-                    int i = 0;
-                    for (; i < strlen(line) - 1; i++) {
-                        line[i] = line[i + 1];
-                    }
-                    line[i] = '\0';
-                    goto SPACE_REMOVED;
                 }
             }
             fclose(tsp);
-
-            // set seed for random
-            srand(seed);
-
-            int start = (int)(rand() % current_path.city_number);
 
             // set up the matrix and fill it with 0s
             long distance = 0;
@@ -146,22 +133,30 @@ int main(int argc, char *argv[]) {
                 }
             }
 
-            current_path.path_result = calloc(current_path.city_number, sizeof(int));
+            current_path.path_result = calloc(current_path.city_number,
+                                              sizeof(int));
             if (!(current_path.path_result)) {
                 free(current_path.path_result);
                 goto FREE_VARIABLES;
             }
 
-            int *best = calloc(current_path.city_number, sizeof(int));
+            path best;
+            best.path_result = calloc(current_path.city_number, sizeof(int));
+            best.length = INT_MAX;
+            best.city_number = current_path.city_number;
 
             // compute the distance between all nodes
             for (int i = 0; i < current_path.city_number; i++) {
                 for (int j = 0; j < current_path.city_number; j++) {
                     // avoid calculating distances twice and from a city to itself
                     if (i != j && map[i][j] == 0) {
-                        distance = lround(sqrt(pow(coordinates[i].x - coordinates[j].x, 2) + pow(coordinates[i].y - coordinates[j].y, 2)));
-                        map[i][j] = (int)distance;
-                        map[j][i] = (int)distance;
+                        distance = lround(
+                                sqrt(pow(coordinates[i].x - coordinates[j].x,
+                                         2) +
+                                     pow(coordinates[i].y - coordinates[j].y,
+                                         2)));
+                        map[i][j] = (int) distance;
+                        map[j][i] = (int) distance;
                     }
                 }
             }
@@ -169,14 +164,46 @@ int main(int argc, char *argv[]) {
             // prints the map for debugging purposes
 //            print_map(map, current_path.city_number, coordinates);
 
-            get_solution(map, coordinates, &current_path, start);
+            double time_spent = 0;
 
-            clock_t toc = clock();
+            while (rep > 0 && known_solution < best.length) {
+                printf("rep left %d\n",rep);
 
-            double time_spent = (double) (toc - tic) / CLOCKS_PER_SEC;
+                clock_t tic = clock();
 
-            printf("Total time: %f minutes, seed: %d\n", time_spent / 60, seed);
-            print_path(current_path.city_number, current_path.path_result, current_path.length);
+                // set seed for random
+                srand(seed);
+
+                current_path.seed = seed;
+
+                int start = (int) (rand() % current_path.city_number);
+
+                get_solution(map, coordinates, &current_path, start);
+
+                clock_t toc = clock();
+
+                if (current_path.length < best.length) {
+                    best.length = current_path.length;
+                    best.seed = current_path.seed;
+                    memcpy(best.path_result, current_path.path_result, best.city_number * sizeof(int));
+                }
+                time_spent = (double) (toc - tic) / CLOCKS_PER_SEC;
+                printf("Total time: %f minutes\n", time_spent / 60);
+                printf("length: %d, seed: %u\n\n",current_path.length, current_path.seed);
+                rep--;
+                seed = (unsigned int) time(NULL);
+
+                // ensure that the seeds are different among reps if running time < 1 sec
+                while (current_path.seed == seed || seed < current_path.seed)
+                    seed++;
+            }
+
+            if (rep)
+                printf("Optimal path found!\n");
+            else
+                printf("reached repetition number, best path found:\n");
+
+                print_path(&best);
 
             // FREE VARIABLES
             FREE_VARIABLES:
@@ -185,7 +212,7 @@ int main(int argc, char *argv[]) {
             }
             free(map);
             free(coordinates);
-            free(best);
+            free(best.path_result);
 
         } else {
             printf("The selected file doesn't exist or it' not in the executable's directory\n");

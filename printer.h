@@ -11,6 +11,6 @@
 
 void print_map(int** map, size_t number, coord* coordinates);
 
-void print_path(size_t number, int* path, int length);
+void print_path(path *course);
 
 #endif //TSP_PRINTER_H

@@ -19,6 +19,7 @@ int calculate_tour(int **map, path *course){
 }
 
 void nearest_neighbor(int **map, coord *coordinates, path *course, int start){
+    printf("running nearest neighbor\n");
     course->length = INT_MAX;
     path temp;
     temp.length = 0;
@@ -76,7 +77,7 @@ void nearest_neighbor(int **map, coord *coordinates, path *course, int start){
     free(temp.path_result);
 }
 
-void two_opt(int** map, path *temp){
+void two_opt(int **map, path *temp){
 
     int min_distance = temp->length;
     int runs = 20;
@@ -109,7 +110,7 @@ void two_opt(int** map, path *temp){
     temp->length = min_distance;
 }
 
-void swap(int* path_result, int i, int j) {
+void swap(int *path_result, int i, int j) {
     size_t size = (size_t)j;
     int *temp = calloc(size, sizeof(int));
     if (!temp){
@@ -134,7 +135,7 @@ void swap(int* path_result, int i, int j) {
     free(temp);
 }
 
-void simulated_annealing(int** map, path *course){
+void simulated_annealing(int **map, path *course){
 
     // best degrees and cooling to assure < 3 min run time on all problems
     double degrees = 10000;
@@ -149,9 +150,9 @@ void simulated_annealing(int** map, path *course){
 
     double accept;
     double test;
+    printf("running simulated annealing\n");
 
     while (degrees > 1){
-        printf("temperature: %f\n",degrees);
         memcpy(temp.path_result, course->path_result, course->city_number * sizeof(int));
 
         size_t first_city = rand() % course->city_number;
