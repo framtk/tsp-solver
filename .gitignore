@@ -1,14 +1,5 @@
 Debug
 cmake-build-debug
 tours
-.idea
-*.xlxs
-*.xml
-.idea/misc.xml
-.idea/vcs.xml
+.idea/*
 
-*.xml
-
-.idea/misc.xml
-
-.idea/vcs.xml
