@@ -37,8 +37,6 @@ void nearest_neighbor(int **map, coord *coordinates, path *course, int start){
             coordinates[p].visited = 0;
         }
 
-        // end reset
-
         for (int i = 0; i < course->city_number - 1; i++) {
             if (map[save][i] != 0 && map[save][i] < minDistance) {
                 minDistance = map[save][i];
@@ -63,7 +61,6 @@ void nearest_neighbor(int **map, coord *coordinates, path *course, int start){
             save2 = save;
         }
 
-        // apply 2-opt
         temp.length = course->length;
         two_opt(map, &temp);
         temp.length = calculate_tour(map, &temp);
@@ -137,7 +134,7 @@ void swap(int *path_result, int i, int j) {
 
 void simulated_annealing(int **map, path *course){
 
-    // best degrees and cooling to assure < 3 min run time on all problems
+    // values may be suboptimal
     double degrees = 10000;
     double cooling = 0.996;
 

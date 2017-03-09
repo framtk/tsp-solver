@@ -71,7 +71,7 @@ int main(int argc, char *argv[]) {
 
         char line[MAX_LINE_SIZE];
         current_path.city_number = 0;
-        // coordinates initializations
+
         coord *coordinates = malloc(sizeof(coord));
         if (!(coordinates)) {
             free(coordinates);
@@ -109,7 +109,6 @@ int main(int argc, char *argv[]) {
             }
             fclose(tsp);
 
-            // set up the matrix and fill it with 0s
             long distance = 0;
             int **map;
             map = calloc((current_path.city_number), sizeof(int *));
@@ -170,7 +169,6 @@ int main(int argc, char *argv[]) {
 
                 clock_t tic = clock();
 
-                // set seed for random
                 srand(seed);
 
                 current_path.seed = seed;
