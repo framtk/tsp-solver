@@ -19,7 +19,7 @@
 #include "structures.h"
 #include "algorithms.h"
 
-void get_solution(int** map, coord *coordinates, path *course, int start){
+void get_solution(int **map, coord *coordinates, path *course, int start){
     nearest_neighbor(map, coordinates, course, start);
     simulated_annealing(map, course);
 }
