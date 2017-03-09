@@ -188,7 +188,7 @@ int main(int argc, char *argv[]) {
                     memcpy(best.path_result, current_path.path_result, best.city_number * sizeof(int));
                 }
                 time_spent = (double) (toc - tic) / CLOCKS_PER_SEC;
-                printf("Total time: %f minutes\n", time_spent / 60);
+                printf("rep time: %f minutes\n", time_spent / 60);
                 printf("length: %d, seed: %u\n\n",current_path.length, current_path.seed);
                 rep--;
                 seed = (unsigned int) time(NULL);
