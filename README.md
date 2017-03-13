@@ -5,7 +5,7 @@ My intention is to expand this project with multiple algorithms to solve the tra
   
 Be aware that this is a personal project and doesn't have priority over others, this means that it may remain incomplete for a long time or it may never be fully completed at all.
 
-I am by no means and expert so if you find any problems and/or want to propose a solution feel free to get in touch with me and/or open an issue here on GitHub
+I am by no means and expert in both C and the TSP so if you find any problems and/or want to propose a solution feel free to get in touch with me and/or open an issue here on GitHub
 
 ### Algorithms and Features implemented so far:
 
@@ -27,7 +27,7 @@ To run the program move to the executable's directory and type ./tsp, this progr
 - **[-r number]**
 - **[-s number]** 
 
--f is the relative path from the executable to the file containing the cities, it should work with the absolute path too but i haven't tested it   
+-f is the relative path from the executable to the file containing the list of cities, it should work with the absolute path as well but i haven't tested it   
 -r is the number of repetitions to run while searching for the best path  
 -s is the seed to use  
 
