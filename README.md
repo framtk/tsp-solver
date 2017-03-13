@@ -1,11 +1,13 @@
 Traveling Salesman Solver
 ===================================================
-This repo contains a TSP solver made in C starting from a .txt file containing a list of cities.  
-My intention is to expand this project with multiple algorithms to solve the traveling salesman problem and add a visualization of the resulting path.  
+  
+This repo contains a TSP solver made in C starting from a .txt file containing a list of cities.     
+My intention is to expand this project with multiple algorithms to solve the traveling salesman problem and add a visualization of the resulting path to have a somewhat comprehensive aggregation of solving methods.  
+I'll try my best to make every method indipendent from the others so that it would be easy to experiment with many different ones to see the various results.
   
 Be aware that this is a personal project and doesn't have priority over others, this means that it may remain incomplete for a long time or it may never be fully completed at all.
 
-I am by no means and expert in both C and the TSP so if you find any problems and/or want to propose a solution feel free to get in touch with me and/or open an issue here on GitHub
+I am by no means and expert in both C and the TSP so if you find any problems and/or want to propose a solution/different ways to do stuff feel free to get in touch with me and/or open an issue here on GitHub
 
 ### Algorithms and Features implemented so far:
 
