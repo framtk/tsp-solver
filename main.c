@@ -48,14 +48,8 @@ int main(int argc, char *argv[]) {
                 rep = (int)strtol(optarg, NULL, 10);
                 break;
             case '?':
-                if (optopt == 'f')
-                    fprintf (stderr, "Option -%c requires an argument.\n", optopt);
-                else if (optopt == 's')
-                    fprintf (stderr, "Option -%c requires an argument.\n", optopt);
-                else if (optopt == 'r')
-                    fprintf (stderr, "Option -%c requires an argument.\n", optopt);
-                else if (isprint (optopt))
-                    fprintf (stderr, "Unknown option `-%c'.\n", optopt);
+                if (optopt)
+                    fprintf (stderr, "There was an error with argument -%c\n", optopt);
                 else
                     fprintf (stderr, "Unknown option character `\\x%x'.\n", optopt);
                 return 1;
