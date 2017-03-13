@@ -9,9 +9,9 @@
 #include "structures.h"
 #include <stdlib.h>
 
-void get_solution(int **map, coord *coordinates, path *course, int start);
+void get_solution(int **map, coord *coordinates, path *course);
 
-void nearest_neighbor(int **map, coord* coordinates, path *course, int start);
+void nearest_neighbor(int **map, coord* coordinates, path *course);
 
 void two_opt(int **map, path *course);
 

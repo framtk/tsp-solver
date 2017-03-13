@@ -19,5 +19,5 @@ void print_path(path *course){
     for (int i = 0; i < course->city_number; i++){
         printf("%d ", course->path_result[i] + 1);
     }
-    printf("\ntotal length: %d, seed: %u\n\n",course->length,course->seed);
+    printf("\ntotal length: %d, seed: %u, time to find: %f seconds\n\n",course->length,course->seed,course->time);
 }

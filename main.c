@@ -19,8 +19,8 @@
 #include "structures.h"
 #include "algorithms.h"
 
-void get_solution(int **map, coord *coordinates, path *course, int start){
-    nearest_neighbor(map, coordinates, course, start);
+void get_solution(int **map, coord *coordinates, path *course){
+    nearest_neighbor(map, coordinates, course);
     simulated_annealing(map, course);
 }
 
@@ -131,11 +131,14 @@ int main(int argc, char *argv[]) {
                 }
             }
 
-            current_path.path_result = calloc(current_path.city_number,
-                                              sizeof(int));
+            current_path.path_result = calloc(current_path.city_number, sizeof(int));
             if (!(current_path.path_result)) {
                 free(current_path.path_result);
                 goto FREE_VARIABLES;
+            }
+
+            for (int i = 0; i < current_path.city_number; i++){
+                current_path.path_result[i] = i;
             }
 
             path best;
@@ -159,6 +162,8 @@ int main(int argc, char *argv[]) {
                 }
             }
 
+            current_path.length = calculate_tour(map,&current_path);
+
             // prints the map for debugging purposes
 //            print_map(map, current_path.city_number, coordinates);
 
@@ -167,25 +172,26 @@ int main(int argc, char *argv[]) {
             while (rep > 0 && known_solution < best.length) {
                 printf("rep left %d\n",rep);
 
-                clock_t tic = clock();
-
                 srand(seed);
 
                 current_path.seed = seed;
 
-                int start = (int) (rand() % current_path.city_number);
+                clock_t tic = clock();
 
-                get_solution(map, coordinates, &current_path, start);
+                get_solution(map, coordinates, &current_path);
 
                 clock_t toc = clock();
+
+                time_spent = (double) (toc - tic) / CLOCKS_PER_SEC;
+
+                current_path.time = time_spent;
 
                 if (current_path.length < best.length) {
                     best.length = current_path.length;
                     best.seed = current_path.seed;
+                    best.time = current_path.time;
                     memcpy(best.path_result, current_path.path_result, best.city_number * sizeof(int));
                 }
-                time_spent = (double) (toc - tic) / CLOCKS_PER_SEC;
-                printf("rep time: %f minutes\n", time_spent / 60);
                 printf("length: %d, seed: %u\n\n",current_path.length, current_path.seed);
                 rep--;
                 seed = (unsigned int) time(NULL);

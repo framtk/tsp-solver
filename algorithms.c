@@ -18,60 +18,46 @@ int calculate_tour(int **map, path *course){
     return tourDistance;
 }
 
-void nearest_neighbor(int **map, coord *coordinates, path *course, int start){
+void nearest_neighbor(int **map, coord *coordinates, path *course){
     printf("running nearest neighbor\n");
-    course->length = INT_MAX;
-    path temp;
-    temp.length = 0;
-    temp.city_number = course->city_number;
-    temp.path_result = calloc(course->city_number, sizeof(int));
-    if (!(temp.path_result)){
-        goto SKIP_NN;
-    }
+
+    int start = (int) (rand() % course->city_number);
+
+    course->length = 0;
 
     int save, save2, first, minDistance;
 
-        save = save2 = first = start;
+    save = save2 = first = start;
+    minDistance = INT_MAX;
+    for (int p = 0; p < course->city_number; p++){
+        coordinates[p].visited = 0;
+    }
+
+    for (int i = 0; i < course->city_number - 1; i++) {
+        if (map[save][i] != 0 && map[save][i] < minDistance) {
+            minDistance = map[save][i];
+            save2 = i;
+        }
+    }
+
+    coordinates[first].visited = 1;
+    course->path_result[0] = first;
+
+    for (size_t i = 0; i < course->city_number - 1; i++) {
         minDistance = INT_MAX;
-        for (int p = 0; p < course->city_number; p++){
-            coordinates[p].visited = 0;
-        }
-
-        for (int i = 0; i < course->city_number - 1; i++) {
-            if (map[save][i] != 0 && map[save][i] < minDistance) {
-                minDistance = map[save][i];
-                save2 = i;
+        for (int j = 0; j < course->city_number; j++) {
+            if (save2 != j && map[save2][j] < minDistance && !(coordinates[j].visited)) {
+                minDistance = map[save2][j];
+                save = j;
             }
         }
+        coordinates[save2].visited = 1;
+        course->path_result[i + 1] = save2;
+        course->path_result[i + 1] = save2;
+        save2 = save;
+    }
 
-        coordinates[first].visited = 1;
-        temp.path_result[0] = first;
-
-        for (size_t i = 0; i < course->city_number - 1; i++) {
-            minDistance = INT_MAX;
-            for (int j = 0; j < course->city_number; j++) {
-                if (save2 != j && map[save2][j] < minDistance && !(coordinates[j].visited)) {
-                    minDistance = map[save2][j];
-                    save = j;
-                }
-            }
-            coordinates[save2].visited = 1;
-            temp.path_result[i + 1] = save2;
-            temp.path_result[i + 1] = save2;
-            save2 = save;
-        }
-
-        temp.length = course->length;
-        two_opt(map, &temp);
-        temp.length = calculate_tour(map, &temp);
-
-        // save if better than previous one
-        if (temp.length < course->length) {
-            course->length = temp.length;
-            memcpy(course->path_result, temp.path_result, course->city_number * sizeof(int));
-        }
-    SKIP_NN:
-    free(temp.path_result);
+    course->length = calculate_tour(map,course);
 }
 
 void two_opt(int **map, path *temp){
@@ -158,13 +144,13 @@ void simulated_annealing(int **map, path *course){
             second_city = rand() % course->city_number;
         while (second_city == first_city);
 
-        int save_city = temp.path_result[first_city];
+        int saved_city = temp.path_result[first_city];
         temp.path_result[first_city] = temp.path_result[second_city];
-        temp.path_result[second_city] = save_city;
-
-        temp.length = calculate_tour(map, &temp);
+        temp.path_result[second_city] = saved_city;
 
         two_opt(map, &temp);
+
+        temp.length = calculate_tour(map, &temp);
 
         accept = rand() / (double) RAND_MAX;
         test = accept_solution(course->length, temp.length, degrees);

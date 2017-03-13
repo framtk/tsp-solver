@@ -18,6 +18,7 @@ typedef struct course{
     int length;
     size_t city_number;
     unsigned int seed;
+    double time;
 }path;
 
 #endif //TSP_STRUCTURES_H
