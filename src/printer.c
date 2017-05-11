@@ -4,7 +4,7 @@
 
 
 #include <stdio.h>
-#include "printer.h"
+#include "../include/printer.h"
 
 void print_map(int **map, size_t city_number, coord *coordinates){
     for (int i = 0; i < city_number; i++){

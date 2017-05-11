@@ -2,8 +2,8 @@
 // Created by Francesco Arrigo
 //
 
-#include "algorithms.h"
-#include "structures.h"
+#include "../include/algorithms.h"
+#include "../include/structures.h"
 #include <limits.h>
 #include <stdio.h>
 #include <string.h>

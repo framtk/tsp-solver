@@ -15,9 +15,9 @@
 #include <math.h>
 #include <time.h>
 #include <limits.h>
-#include "printer.h"
-#include "structures.h"
-#include "algorithms.h"
+#include "../include/printer.h"
+#include "../include/structures.h"
+#include "../include/algorithms.h"
 
 void get_solution(int **map, coord *coordinates, path *course){
     nearest_neighbor(map, coordinates, course);
