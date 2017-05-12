@@ -19,16 +19,18 @@ How to compile
 ----
 Move to the program directory and run ***cmake CmakeLists.txt***, then run ***make*** and an executable called ***tsp*** should be created in the same directory.  
 
-Alternatively move to the program directory and write ***gcc main.c algorithms.c printer.c -o tsp*** and the executable should be created
+Alternatively move to the src directory and write ***gcc main.c algorithms.c printer.c -o tsp*** and the executable should be created
  
  How to run
 ----
-To run the program move to the executable's directory and type ./tsp, this program can take 3 arguments, arguments in brackets are optional
+To run the program move to the executable's directory and type ./tsp, this program can take 3 arguments.  
+Arguments in square brackets are optional, round brackets indicate the default value if none is inserted.
+
 
 - **-f filepath**
-- **[-r number]**
-- **[-s number]** 
-
+- **[-r number]** (1)
+- **[-s number]** (system time)   
+  
 -f is the relative path from the executable to the file containing the list of cities, it should work with the absolute path as well but i haven't tested it   
 -r is the number of repetitions to run while searching for the best path  
 -s is the seed to use  
@@ -45,7 +47,7 @@ city_number x_coordinate y_coordinate
 ```
 The city number is just used to identify which lines contain cities. I.E. if the first city in the list has number 80 it will still be treated as city 1, if the second one in hte list has number 90 it will be treated as city 2 and so on.  
 The city order doesn't matter anyway since the starting city is chosen randomly but i guess it's useful to point it out just in case.  
-The coordinates can be both integers and float numbers but the distance between two cities will be rounded to the nearest integer.  
+The coordinates can be both integers and float numbers but the distance, not the city coordinates, between two cities will be rounded to the nearest integer.  
 This means that the total tour length is always going to be an integer.  
   
 An example list of cities is given in the file ***ch130.tsp***
