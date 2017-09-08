@@ -49,7 +49,7 @@ int main(int argc, char *argv[]) {
                 break;
             case '?':
                 if (optopt)
-                    fprintf (stderr, "There was an error with argument -%c\n", optopt);
+                    fprintf (stderr, "Unknown argument -%c\n", optopt);
                 else
                     fprintf (stderr, "Unknown option character `\\x%x'.\n", optopt);
                 return 1;
@@ -76,7 +76,7 @@ int main(int argc, char *argv[]) {
         if (access(filename, F_OK) != -1) {
             FILE *tsp = fopen(filename, "r");
             if (!tsp) {
-                printf("There was an error opening the file!\n");
+                printf("There was an error opening the file!\n File not found or permission denied.");
                 free(coordinates);
                 return 1;
             }
@@ -190,7 +190,8 @@ int main(int argc, char *argv[]) {
                 rep--;
                 seed = (unsigned int) time(NULL);
 
-                // ensure that the seeds are different among reps if running time < 1 sec
+                // ensure that the seeds are different among reps
+                // if the running time it's too short the time might not change
                 while (current_path.seed == seed || seed < current_path.seed)
                     seed++;
             }
@@ -198,9 +199,9 @@ int main(int argc, char *argv[]) {
             if (rep)
                 printf("Optimal path found!\n");
             else
-                printf("reached repetition number, best path found:\n");
+                printf("Reached repetition number, best path found:\n");
 
-                print_path(&best);
+            print_path(&best);
 
             // FREE VARIABLES
             FREE_VARIABLES:
